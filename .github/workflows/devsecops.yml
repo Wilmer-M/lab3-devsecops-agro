@@ -28,7 +28,7 @@ jobs:
           semgrep scan --config p/owasp-top-ten --error --metrics=off .
 
       - name: SCA y configuración (Trivy)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scanners: vuln,misconfig
@@ -53,7 +53,7 @@ jobs:
         run: docker build -t sistema-api:ci servicio
 
       - name: Escaneo de la imagen (Trivy)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: sistema-api:ci
           severity: HIGH,CRITICAL
@@ -75,7 +75,7 @@ jobs:
           curl -fsS -H "X-API-Key: $API_KEY" http://localhost:8000/api/resumen
 
       - name: SBOM (CycloneDX)
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: sistema-api:ci
           format: cyclonedx
