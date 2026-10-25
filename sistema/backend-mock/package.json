@@ -1,0 +1,23 @@
+{
+  "name": "backend-mock",
+  "version": "1.0.0",
+  "description": "Mock API for Agro Sensores performance testing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "nodemailer": "^6.10.1",
+    "sqlite3": "^5.1.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sqlite3"
+    ]
+  },
+  "private": true
+}
