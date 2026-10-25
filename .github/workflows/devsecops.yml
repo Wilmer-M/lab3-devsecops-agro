@@ -1,0 +1,87 @@
+name: devsecops
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  controles-de-codigo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Secretos expuestos (gitleaks)
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SAST (Semgrep)
+        run: |
+          python -m pip install semgrep
+          semgrep scan --config p/owasp-top-ten --error --metrics=off .
+
+      - name: SCA y configuración (Trivy)
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          scan-type: fs
+          scanners: vuln,misconfig
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Políticas como código (Conftest)
+        run: |
+          docker run --rm -v "$PWD:/project" openpolicyagent/conftest \
+            test servicio/Dockerfile --policy policy/docker
+          docker run --rm -v "$PWD:/project" openpolicyagent/conftest \
+            test k8s --policy policy/k8s
+
+  imagen:
+    needs: controles-de-codigo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Construir imagen
+        run: docker build -t sistema-api:ci servicio
+
+      - name: Escaneo de la imagen (Trivy)
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          image-ref: sistema-api:ci
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      - name: Prueba de humo
+        env:
+          API_KEY: ${{ secrets.API_KEY_CI }}
+        run: |
+          docker run -d --name api -p 8000:8000 -e API_KEY="$API_KEY" \
+            sistema-api:ci
+          for i in $(seq 1 15); do
+            curl -fs http://localhost:8000/health && break; sleep 2
+          done
+          CODIGO=$(curl -s -o /dev/null -w '%{http_code}' \
+            http://localhost:8000/api/resumen)
+          test "$CODIGO" = "401"
+          curl -fsS -H "X-API-Key: $API_KEY" http://localhost:8000/api/resumen
+
+      - name: SBOM (CycloneDX)
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
+        with:
+          image-ref: sistema-api:ci
+          format: cyclonedx
+          output: sbom.cdx.json
+
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        with:
+          name: sbom
+          path: sbom.cdx.json
