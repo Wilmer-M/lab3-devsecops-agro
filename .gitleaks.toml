@@ -1,0 +1,5 @@
+[allowlist]
+description = "Permitir ejemplos en archivos markdown de documentacion"
+paths = [
+  '''(?i).*\.md$'''
+]
