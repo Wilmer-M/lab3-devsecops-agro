@@ -71,7 +71,7 @@ docker compose up --build -d
 # Validar salud y endpoints
 curl -i http://localhost:8000/health
 curl -i http://localhost:8000/api/resumen                           # Respuesta esperada: 401
-curl -i -H "X-API-Key: su_clave" http://localhost:8000/api/resumen  # Respuesta esperada: 200
+curl -i -H "X-API-Key: <su-clave>" http://localhost:8000/api/resumen  # Respuesta esperada: 200
 docker compose logs api
 docker compose down
 ```
@@ -82,9 +82,9 @@ docker compose down
 podman build -t sistema-api:podman-1.0 servicio
 
 # Ejecutar contenedor
-podman run -d --name sistema-api-podman -p 8000:8000 -e API_KEY="CLAVE_PRUEBA" sistema-api:podman-1.0
+podman run -d --name sistema-api-podman -p 8000:8000 -e API_KEY="<su-clave>" sistema-api:podman-1.0
 curl -i http://localhost:8000/health
-curl -i -H "X-API-Key: CLAVE_PRUEBA" http://localhost:8000/api/resumen
+curl -i -H "X-API-Key: <su-clave>" http://localhost:8000/api/resumen
 podman stop sistema-api-podman && podman rm sistema-api-podman
 ```
 
@@ -106,7 +106,7 @@ kind create cluster --name devsecops --config kind-config.yaml
 kind load docker-image sistema-api:1.0 --name devsecops
 
 # 3. Crear secreto de API_KEY
-kubectl create secret generic api-secreto --from-literal=API_KEY="clave-segura-k8s-12345"
+kubectl create secret generic api-secreto --from-literal=API_KEY="$(openssl rand -hex 24)"
 
 # 4. Desplegar manifiestos
 kubectl apply -f k8s/
