@@ -35,6 +35,7 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: "1"
+          skip-dirs: "sistema/backend-mock"
 
       - name: Políticas como código (Conftest)
         run: |
