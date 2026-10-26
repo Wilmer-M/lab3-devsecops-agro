@@ -15,7 +15,7 @@ El sistema original (móvil y analítica de sensores agrícolas) se desacopla me
 ## 🏗️ Estructura del Repositorio
 
 ```text
-├── sistema/                        # Código original del sistema AgroSmart (React Native / Mock)
+├── sistema/                        # Cascarón de arquitectura y mock del cliente móvil (React Native / Expo)
 ├── servicio/                       # Microservicio desacoplado (FastAPI)
 │   ├── app/
 │   │   └── main.py                 # API REST (/health, /api/resumen, /metrics)
@@ -39,7 +39,6 @@ El sistema original (móvil y analítica de sensores agrícolas) se desacopla me
 │   │   └── devsecops.yml           # Pipeline CI/CD endurecido con SHAs inmutables
 │   └── dependabot.yml              # Actualizaciones automatizadas semanales
 ├── kind-config.yaml                # Configuración del clúster local kind
-├── INFORME_LAB_TE2_03_DEVSECOPS.md # Informe técnico formal (6 a 10 págs)
 ├── .gitignore
 └── README.md
 ```
@@ -120,4 +119,4 @@ curl -i http://localhost:8080/health
 ---
 
 ## 👥 Integrantes del Proyecto
-* Grupo de Trabajo - Tópicos Especiales 2.
+* Wilmer Morales — Tópicos Especiales 2 (Grupo 6GS141).
