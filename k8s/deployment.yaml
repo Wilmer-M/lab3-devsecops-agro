@@ -4,14 +4,14 @@ metadata:
   name: sistema-api
   labels: { app: sistema-api }
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels: { app: sistema-api }
   template:
     metadata:
       labels: { app: sistema-api }
     spec:
-      automountServiceAccountToken: false
+      # automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
