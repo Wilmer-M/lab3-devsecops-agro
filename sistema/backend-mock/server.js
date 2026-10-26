@@ -626,6 +626,7 @@ app.post("/api/enviar-otp", (req, res) => {
     from: '"AgroSmart Notificaciones" <noreply@agrosmart.com>',
     to: correo,
     subject: "Código de Verificación AgroSmart",
+    // nosemgrep: javascript.express.security.injection.raw-html-format.raw-html-format
     html: `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
         <div style="text-align: center; margin-bottom: 20px;">

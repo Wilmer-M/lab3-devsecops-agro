@@ -1,0 +1,4 @@
+.github/dependabot.yml
+node_modules/
+dist/
+dist-test/
