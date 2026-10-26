@@ -12,6 +12,13 @@ spec:
       labels: { app: sistema-api }
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: api
         image: sistema-api:1.0
